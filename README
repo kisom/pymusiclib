@@ -1,0 +1,11 @@
+pymuslib
+python utilities to do things with my music library
+4096R/B7B720D6  "Kyle Isom <coder@kyleisom.net>"
+
+dedup.py
+    remove duplicates from a library
+
+orglib.py
+    organize library
+
+
