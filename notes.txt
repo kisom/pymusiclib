@@ -1,0 +1,5 @@
+mutagen.mp3.HeaderNotFoundError
+    # not an mp3 file
+
+mutagen.mp4.MP4StreamInfoError
+    # not an AAC file

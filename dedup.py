@@ -8,3 +8,5 @@ import os
 import re
 import sys
 
+def _is_mp3(file):
+    return eyed3.
