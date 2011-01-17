@@ -4,13 +4,14 @@ err = stderr.write
 
 class AudioFile():
     
-    file    = None
-    artist  = None
-    album   = None
-    title   = None
-    fhash   = None
-    length  = None
-    brate   = None
+    file        = None
+    artist      = None
+    album       = None
+    title       = None
+    fhash       = None
+    length      = None
+    bitrate     = None
+    type        = None
 
 
     def __init__(self, filename):
