@@ -2,12 +2,14 @@ from AudioFile import AudioFile
 from Mp3 import Mp3
 from Mp4 import Mp4
 
+debug = False
+
 def MagicFile(filename):
     # won't work if we ever get around to procession FLAC
     extension = filename[-4:]
 
     if not extension[0] == '.':
-        print 'invalid file!'
+        if debug: print 'invalid file!'
         return None
 
     extension = extension[1:]
@@ -18,7 +20,7 @@ def MagicFile(filename):
     elif extension == 'mp4':
         return Mp4(filename)
     else:
-        print 'invalid file!'
+        if debug: print 'invalid file!'
         return None
 
 
