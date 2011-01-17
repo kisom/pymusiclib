@@ -4,6 +4,11 @@ from mutagen import id3
 
 tag_chk = [ 'TPE2', 'TALB', 'TIT1' ]
 tag_ignore = [ u'APIC:', u"COMM::'eng'", 'TDRC' ]
+tag_trans = {
+    'TITLE':'TIT2',
+    'ARTIST':'TPE1',
+    'ALBUM':'TALB',
+}
 
 def cmptags(file1, file2):
     id3inf1 = mp3.MP3(file1)
@@ -24,3 +29,20 @@ def cmptags(file1, file2):
             return False
 
     return True
+
+def get_tags(file):
+    id3 = mp3.MP3(file)
+    tags = { }
+    
+    for tag in tag_trans:
+        tags[tag] = id3[tag_trans[tag]][0]
+    
+    return tags
+
+def is_mp3(file):
+    try:
+        id3 = mp3.MP3(file)
+    except mp3.HeaderNotFoundError:
+        return False
+    else:
+        return True
