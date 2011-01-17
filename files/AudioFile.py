@@ -14,11 +14,11 @@ class AudioFile():
     type        = None
 
 
-    def __init__(self, filename):
+    def __init__(self, filename, filehash = True):
         self.file = filename
         self.__load_tags()
         self.__load_info()
-        self.__load_hash()
+        if filehash: self.__load_hash()
 
     def __load_tags(self):
         pass

@@ -7,17 +7,18 @@ class Mp4 (AudioFile):
     """
     aac = None
 
-    def __init__(parent, self, filename):
-        File(filename)
-        self.type = 'MPEG-4 audio stream'
-        self.aac = mp4.MP4(filename)
+    def __init__(self, filename, filehash = True):
+        AudioFile.__init__(self, filename, filehash)
+        self.type   = 'MPEG-4 audio stream'
+        self.aac    = mp4.MP4(filename)
         self.__load_tags()
         self.__load_info()
+        del self.aac
 
     def __load_tags(self):
-        self.artist = aac['\xa9ART'][0]
-        self.album  = aac['\xa9alb'][0]
-        self.title  = aac['\xa9nam'][0]
+        self.artist     = self.aac['\xa9ART'][0]
+        self.album      = self.aac['\xa9alb'][0]
+        self.title      = self.aac['\xa9nam'][0]
 
     def __load_info(self):
         self.length     = self.aac.info.length

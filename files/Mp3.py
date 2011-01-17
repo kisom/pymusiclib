@@ -5,13 +5,13 @@ class Mp3 (AudioFile):
 
     id3 = None
 
-    def __init__(self, filename):
-        AudioFile.__init__(self, filename)
+    def __init__(self, filename, filehash = True):
+        AudioFile.__init__(self, filename, filehash)
         self.type = 'MPEG-3 audio stream'
         self.id3 = mp3.MP3(self.file)
         self.__load_tags()
         self.__load_info()
-
+        del self.id3
 
     
     def __load_tags(self):
