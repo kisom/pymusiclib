@@ -66,8 +66,8 @@ def scan_dir(path):
 
             if selected:
                 if debug:
-                    LOG('[-] selecting with duplicate %s\n' % target)
-                    LOG("[-]\t%s selected\n" % (selected, ))
+                    LOG('[-]\tcomparing with duplicate %s\n' % target)
+                    LOG("[-]\t%s selected for removal\n" % (selected, ))
                     
                 file_data[selected]['dupe'] = True
         
@@ -99,14 +99,14 @@ def tango(path):
     tree    = os.walk(path)
     
     while True:
-        if debug:
-            LOG('currently in %s\n' % os.getcwd())
         try:
             (dirp, dirs, files) = tree.next()
         except:
             break
         else:
             if len(files) < 2: continue         # no point comparing 1 file
+            if debug:
+                LOG('currently in %s\n' % os.getcwd())
             num_removed += scan_dir(dirp)
             os.chdir(cwd)
         
