@@ -51,7 +51,9 @@ def scan_dir(path):
 
         if debug:
             LOG('[-] current file: %s\n' % curfile)
-            LOG('[-]\ttrack: %s\n' % FileTools.tag_str(file_data['af']))
+            LOG('[-]\ttrack: %s\n' % FileTools.tag_str(
+                file_data[curfile]['af']
+            ))
             
         targets = [ f for f in files if not f == curfile ]
 
@@ -64,6 +66,7 @@ def scan_dir(path):
 
             if selected:
                 if debug:
+                    LOG('[-] selecting with duplicate %s\n' % target)
                     LOG("[-]\t%s selected\n" % (selected, ))
                     
                 file_data[selected]['dupe'] = True
@@ -113,6 +116,8 @@ def main(target):
     if debug:
         now = datetime.datetime.now()
         LOG('[+] starting dedup at %s\n' % str(now))
+        if readonly:
+            LOG('[+] _not_ removing files - readonly mode selected\n')
         
     tango(target)
     
@@ -127,8 +132,6 @@ def main(target):
     
 # main code
 if '__main__' == __name__:
-    if debug: print "would debug"
-    if readonly: print "won't actually delete"
     
     aparser = argparse.ArgumentParser(description='python utility to remove '+
                                       'duplicates from a music library')
@@ -147,6 +150,8 @@ if '__main__' == __name__:
     
     if args.readonly:
         readonly = True
-    
-    if debug: print "would debug"
-    if readonly: print "won't actually delete"
+
+    if args.logfile:
+        setup_logger(args.logfile)
+        
+    main(args.target)
