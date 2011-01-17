@@ -16,9 +16,12 @@ class Mp4 (AudioFile):
         del self.aac
 
     def __load_tags(self):
-        self.artist     = self.aac['\xa9ART'][0]
-        self.album      = self.aac['\xa9alb'][0]
-        self.title      = self.aac['\xa9nam'][0]
+        if '\xa9ART' in self.aac.keys():
+            self.artist     = self.aac['\xa9ART'][0]
+        if '\xa9alb' in self.aac.keys():
+            self.album      = self.aac['\xa9alb'][0]
+        if '\xa9nam' in self.aac.keys():
+            self.title      = self.aac['\xa9nam'][0]
 
     def __load_info(self):
         self.length     = self.aac.info.length

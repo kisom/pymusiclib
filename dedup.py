@@ -165,7 +165,7 @@ def main(target):
     if diskuse:
         du_post = get_diskuse(target).split('\t')[0]
 
-    if debug:
+    if debug and diskuse:
         LOG('\n[+] starting disk usage: %s\n' % du_pre.strip())
         LOG('[+]   ending disk usage: %s\n' % du_post.strip())
 
