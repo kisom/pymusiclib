@@ -17,6 +17,7 @@ num_removed = 0
 processed   = 0
 debug       = False
 diskuse     = False
+dohash      = True
 readonly    = False
 LOG         = sys.stdout.write
 LOGF        = None
@@ -47,7 +48,7 @@ def scan_dir(path):
     # build file list
     for file in files:
         file_data[file] = { }
-        file_data[file]['af']   = MagicFile(file)
+        file_data[file]['af']   = MagicFile(file, dohash)
         file_data[file]['dupe'] = False
     
     files = [f for f in files if not file_data[f]['af'] == None ]
@@ -168,6 +169,8 @@ if '__main__' == __name__:
                          help = 'enable debug / logging output')
     aparser.add_argument('-l', '--logfile', help = 'file to log to, defaults '+
                          'to stdout')
+    aparser.add_argument('-n', '--nohash', help = 'do not compare based on ' +
+                         'file hashes (faster)', action = 'store_true')
     aparser.add_argument('-r', '--readonly', action = 'store_true',
                          help = "only log what would be done, don't actually " +
                          "remove any files")
@@ -187,5 +190,8 @@ if '__main__' == __name__:
     
     if args.size:
         diskuse = True
+
+    if args.nohash:
+        dohash = False
         
     main(args.target)

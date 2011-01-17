@@ -4,7 +4,7 @@ from Mp4 import Mp4
 
 debug = False
 
-def MagicFile(filename):
+def MagicFile(filename, filehash = True):
     # won't work if we ever get around to procession FLAC
     extension = filename[-4:]
 
@@ -14,11 +14,11 @@ def MagicFile(filename):
 
     extension = extension[1:]
     if extension == 'mp3':
-        return Mp3(filename)
+        return Mp3(filename, filehash)
     elif extension == 'm4a':
-        return Mp4(filename)
+        return Mp4(filename, filehash)
     elif extension == 'mp4':
-        return Mp4(filename)
+        return Mp4(filename, filehash)
     else:
         if debug: print 'invalid file!'
         return None
