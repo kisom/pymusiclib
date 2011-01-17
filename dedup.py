@@ -19,6 +19,7 @@ debug       = False
 diskuse     = False
 dohash      = True
 readonly    = False
+removed     = [ ]
 LOG         = sys.stdout.write
 LOGF        = None
 
@@ -39,7 +40,6 @@ def scan_dir(path):
     global processed
     
     file_data   = { }
-    removed     = [ ]
     dupes       = [ ]
     os.chdir(path)
     LOG("[-] cwd: %s\n" % os.getcwd())
@@ -59,9 +59,13 @@ def scan_dir(path):
 
         if debug:
             LOG('[-] current file: %s\n' % curfile)
-            LOG('[-]\ttrack: %s\n' % FileTools.tag_str(
+            try:
+                LOG(u'[-]\ttrack: %s\n' % unicode(FileTools.tag_str(
                 file_data[curfile]['af']
-            ))
+                )))
+            except:
+                LOG('[!] python tried to use ascii against unicode - ')
+                LOG('it\'s super-ineffective!\n')
             
         targets = [ f for f in files if not f == curfile ]
 
@@ -87,11 +91,12 @@ def scan_dir(path):
                 if debug:
                     LOG('[!] failed to remove %s/%s\n' % (path, file))
             else:
-                removed.append(file)
+                removed.append('%s/%s' % (path, file))
+                dupes.append(file)
                 if debug:
                     LOG('[+] removed file %s/%s\n' % (path, file))
     
-    return len(removed)
+    return len(dupes)
 
 def tango(path):
     """
@@ -139,13 +144,18 @@ def main(target):
         if readonly:
             LOG('[+] _not_ removing files - readonly mode selected\n')
     if diskuse:
-        du_pre = get_diskuse(target)
+        du_pre = get_diskuse(target).split('\t')[0]
 
     tango(target)
     
     if debug:
         end = datetime.datetime.now()
-        LOG('[+] finished dedup at %s\n' % str(end))
+        if removed: 
+            LOG('\n[+] removed the following files:\n')
+        for file in removed:
+            LOG('\t[+] %s\n' % file)
+
+        LOG('\n[+] finished dedup at %s\n' % str(end))
         delta = end - now
         LOG('[+] processed %d files, removed %d, in %s\n' %
             (processed, num_removed, str(delta)))
@@ -153,7 +163,11 @@ def main(target):
         LOG('deleted %d files\n' % num_removed)
     
     if diskuse:
-        du_post = get_diskuse(target)
+        du_post = get_diskuse(target).split('\t')[0]
+
+    if debug:
+        LOG('\n[+] starting disk usage: %s\n' % du_pre.strip())
+        LOG('[+]   ending disk usage: %s\n' % du_post.strip())
 
     if debug:
         LOG('[+] finished!\n\n')
@@ -193,5 +207,6 @@ if '__main__' == __name__:
 
     if args.nohash:
         dohash = False
+
         
     main(args.target)

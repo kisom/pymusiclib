@@ -53,4 +53,5 @@ def select(af1, af2):
 
 def tag_str(af):
     tag = "%s - %s - %s" % (af.artist, af.album, af.title)
-    return tag
+
+    return unicode.encode(tag, 'utf-8')
