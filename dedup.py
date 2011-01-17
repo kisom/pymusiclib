@@ -4,16 +4,20 @@
 
 import argparse
 import datetime
+import mutagen              # import for dependency checking only
 import os
 import pdb
 import re
+import subprocess
 import sys
 from files.MagicFile import MagicFile
 from files import FileTools
 
 num_removed = 0
+processed   = 0
 debug       = False
-readonly    = True
+diskuse     = False
+readonly    = False
 LOG         = sys.stdout.write
 LOGF        = None
 
@@ -31,6 +35,8 @@ def setup_logger(logfile):
 
 
 def scan_dir(path):
+    global processed
+    
     file_data   = { }
     removed     = [ ]
     dupes       = [ ]
@@ -45,6 +51,7 @@ def scan_dir(path):
         file_data[file]['dupe'] = False
     
     files = [f for f in files if not file_data[f]['af'] == None ]
+    processed += len(files)
 
     for curfile in files:
         if file_data[curfile]['dupe']: continue
@@ -112,29 +119,51 @@ def tango(path):
         
     LOG('removed %d files\n' % num_removed)
 
+def get_diskuse(target):
+    if debug:
+        LOG('[+] calculating disk use...\n')
+    
+    du = subprocess.Popen("du -hs %s" % target, stdout=subprocess.PIPE,
+                          shell=True).communicate()[0]
+    if debug:
+        LOG('\t%s\n' % du.strip())
+        
+    return du
+
 def main(target):
+
     if debug:
         now = datetime.datetime.now()
         LOG('[+] starting dedup at %s\n' % str(now))
         if readonly:
             LOG('[+] _not_ removing files - readonly mode selected\n')
-        
+    if diskuse:
+        du_pre = get_diskuse(target)
+
     tango(target)
     
     if debug:
         end = datetime.datetime.now()
         LOG('[+] finished dedup at %s\n' % str(end))
         delta = end - now
-        LOG('[+] %d files removed in %s\n' % (num_removed, str(delta)))
+        LOG('[+] processed %d files, removed %d, in %s\n' %
+            (processed, num_removed, str(delta)))
     else:
         LOG('deleted %d files\n' % num_removed)
+    
+    if diskuse:
+        du_post = get_diskuse(target)
 
+    if debug:
+        LOG('[+] finished!\n\n')
     
 # main code
 if '__main__' == __name__:
     
     aparser = argparse.ArgumentParser(description='python utility to remove '+
-                                      'duplicates from a music library')
+                                      'duplicates from a music library',
+                                      epilog = 'dependencies: mutagen, ' +
+                                      'argparse')
     aparser.add_argument('-d', '--debug', action = 'store_true',
                          help = 'enable debug / logging output')
     aparser.add_argument('-l', '--logfile', help = 'file to log to, defaults '+
@@ -142,6 +171,8 @@ if '__main__' == __name__:
     aparser.add_argument('-r', '--readonly', action = 'store_true',
                          help = "only log what would be done, don't actually " +
                          "remove any files")
+    aparser.add_argument('-s', '--size', action = 'store_true',
+                         help = 'add reports of disk usage before and after')
     aparser.add_argument('target', help = 'path to music library')
     args = aparser.parse_args()
 
@@ -153,5 +184,8 @@ if '__main__' == __name__:
 
     if args.logfile:
         setup_logger(args.logfile)
+    
+    if args.size:
+        diskuse = True
         
     main(args.target)
