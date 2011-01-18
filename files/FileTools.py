@@ -1,5 +1,11 @@
 from AudioFile import AudioFile
 
+def get_extension(filename):
+    index = filename.rfind('.')
+    if index == 0:
+        return None
+    return filename[index + 1:]
+
 def compare_tags(af1, af2):
     if not af1.title  == af2.title:  return False
     if not af1.artist == af2.artist: return False
