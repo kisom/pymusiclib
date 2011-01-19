@@ -9,7 +9,10 @@ class AudioFile():
     album       = None
     title       = None
     track       = None
-    maxtracks   = None
+    alb_tracks  = None
+    disc        = None
+    disc_set    = None
+    year        = None
     fhash       = None
     length      = None
     bitrate     = None
