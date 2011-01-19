@@ -8,6 +8,8 @@ class AudioFile():
     artist      = None
     album       = None
     title       = None
+    track       = None
+    maxtracks   = None
     fhash       = None
     length      = None
     bitrate     = None
@@ -34,6 +36,9 @@ class AudioFile():
             return
         else:
             self.fhash = Hasher.new(f.read()).digest()
-            f.close()
+            f.close() 
+
+    def write_tags(self):
+        pass
 
 

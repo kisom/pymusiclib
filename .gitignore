@@ -1,3 +1,6 @@
 *.pyc
 .*.swp
-
+*.mp3
+*.mp4
+*.m4a
+*.flac
