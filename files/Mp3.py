@@ -40,10 +40,24 @@ class Mp3 (AudioFile):
 
         # load track
         if 'TRCK' in self.audio.keys():
-            (self.track, self.maxtracks) = self.audio['TRCK'][0].split('/')
+            (self.track, self.alb_tracks) = self.audio['TRCK'][0].split('/')
             self.audio_encoding['tracks'] = self.audio['TRCK'].encoding
-        else
+        else:
              self.audio_encoding['tracks']  = 0
+
+        # load disc
+        if 'TPOS' in self.audio.keys():
+            (self.disc, self.disc_set) = self.audio['TPOS'][0].split('/')
+            self.audio_encoding['disc'] = self.audio['TPOS'].encoding
+        else:
+            self.audio_encoding['disc'] = 0
+
+        # load year
+        if 'TDRC' in self.audio.keys():
+            self.year       = self.audio['TDRC'][0]
+            self.audio_encoding['year'] = 0
+        else:
+            self.audio_encoding['year'] = 0
             
 
     def __load_info(self):
@@ -51,16 +65,25 @@ class Mp3 (AudioFile):
         self.bitrate    = self.audio.info.bitrate
 
     def write_tags(self):
-        self.audio = id3.ID3(self.file)
-
+        self.audio  = id3.ID3(self.file)
+        tracks      = u'%s/%s' % (unicode(self.track), 
+                                  unicode(self.alb_tracks))
+        disc        = u'%s/%s' % (unicode(self.disc), unicode(self.disc_set))
         # add tags
 
-        audio.add(id3.TPE1(encoding = self.audio_encoding['artist'], 
-                     text           = self.artist ))
-        audio.add(id3.TALB(encoding = self.audio_encoding['album'], 
-                     text           = self.album))
-        audio.add(id3.TIT2(encoding = self.audio_encoding['title'],
-                     text           = self.title))
+        self.audio.add(id3.TPE1(encoding = self.audio_encoding['artist'], 
+                     text                = unicode(self.artist )))
+        self.audio.add(id3.TALB(encoding = self.audio_encoding['album'], 
+                     text                = unicode(self.album)))
+        self.audio.add(id3.TIT2(encoding = self.audio_encoding['title'],
+                     text                = unicode(self.title)))
+        self.audio.add(id3.TRCK(encoding = self.audio_encoding['tracks'],
+                     text                = tracks))
+        self.audio.add(id3.TPOS(encoding = self.audio_encoding['disc'],
+                     text                = disc))
+        self.audio.add(id3.TDRC(encoding = self.audio_encoding['year'],
+                     text                = unicode(self.year)))
+
         
-        audio.save()
+        self.audio.save()
         
