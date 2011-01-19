@@ -44,4 +44,31 @@ class AudioFile():
     def write_tags(self):
         pass
 
+    def print_tags(self):
+        if self.artist:
+            print "Artist: %s" % self.artist
+        if self.album:
+            print "Album:  %s" % self.album
+        if self.title:
+            print "Title:  %s" % self.title
+        if self.track: 
+            print "Track", self.track, 
+            if self.alb_tracks:
+                print "/", self.alb_tracks
+            else:
+                print ""
+        if self.disc:
+            print "Disc", self.disc,
+            if self.disc_set:
+                print "/", self.disc_set
+            else:
+                print ""
+        if self.year:
+            print "Year:   %s" % self.year
+        if self.length: 
+            print "Length: %s sec" % self.length
+        if self.bitrate:
+            print "Bitrate: %d" % self.bitrate
+        if self.type:
+            print "Type:   %s" % self.type
 
